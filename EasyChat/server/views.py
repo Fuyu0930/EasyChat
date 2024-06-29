@@ -14,6 +14,33 @@ class ServerListViewSet(viewsets.ViewSet):
     queryset = Server.objects.all()
 
     def list(self, request):
+        """List servers based on various query parameters.
+
+        This method filters and returns a list of servers based on the 
+        specified query parameters. The parameters can filter by category,
+        user, server ID, and whether to include the number of members.
+
+        Args:
+            request (HttpRequest): The HTTP request object containing query 
+                parameters and user information.
+
+        Query Parameters:
+            category (str): The category name to filter servers by.
+            qty (int): The quantity of servers to return.
+            by_user (bool): Whether to filter servers by the logged-in user.
+            by_serverid (str): The server ID to filter by.
+            with_num_memebers (bool): Whether to include the number of members 
+                in the response.
+
+        Raises:
+            AuthenticationFailed: If the user is not authenticated and attempts
+                to filter by user or server ID.
+            ValidationError: If the server ID is not found or is invalid.
+
+        Returns:
+            Response: A Django REST framework Response object containing the 
+                serialized server data.
+        """
         # Get the category id from the request
         category = request.query_params.get("category")
         qty = request.query_params.get("qty")
