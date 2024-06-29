@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
@@ -18,6 +19,7 @@ class ServerListViewSet(viewsets.ViewSet):
         qty = request.query_params.get("qty")
         by_user = request.query_params.get("by_user") == 'true'
         by_serverid = request.query_params.get("by_serverid")
+        with_num_memebers = request.query_params.get("with_num_memebers") == 'true'
 
         # If user is not login and they do want to check user and server, 
         # then raise authentication failed
@@ -31,6 +33,9 @@ class ServerListViewSet(viewsets.ViewSet):
         if by_user:
             user_id = request.user.id
             self.queryset = self.queryset.filter(member=user_id)
+        
+        if with_num_memebers:
+            self.queryset = self.queryset.annotate(num_members=Count("member"))
 
         if qty:
             self.queryset = self.queryset[: int(qty)]
@@ -44,6 +49,6 @@ class ServerListViewSet(viewsets.ViewSet):
                 raise ValidationError(detail="Server value error")
 
 
-        serializer = ServerSerializer(self.queryset, many=True)
+        serializer = ServerSerializer(self.queryset, many=True, context={"num_members": with_num_memebers})
         return Response(serializer.data)
 
