@@ -1,5 +1,6 @@
-import { AppBar, Toolbar, Link, Typography } from "@mui/material";
+import { AppBar, Toolbar, Link, Typography, Box, IconButton } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import MenuIcon from "@mui/icons-material/Menu";
 
 
 const PrimaryAppBar = () => {
@@ -15,6 +16,11 @@ const PrimaryAppBar = () => {
                     height: theme.primaryAppBar.height,
                     minHeight: theme.primaryAppBar.height,
                 }}>
+                <Box sx={{ display: { xs: "block", sm: "none" } }}>
+                    <IconButton color="inherit" aria-label="open drawer" edge="start" sx={{ mr: 2 }}>
+                        <MenuIcon />
+                    </IconButton>
+                </Box>
                 <Link href="/" underline="none" color="inherit">
                     <Typography
                         variant="h6"
