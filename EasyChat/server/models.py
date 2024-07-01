@@ -1,3 +1,4 @@
+
 from django.conf import settings
 from django.db import models
 from django.dispatch import receiver
@@ -15,28 +16,30 @@ def server_banner_upload_path(instance, filename):
 def category_icon_upload_path(instance, filename):
     return f"category/{instance.id}/category_icon/{filename}"
 
-# Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
-    icon = models.FileField(upload_to=category_icon_upload_path, null=True, blank=True)
+    icon = models.FileField(
+        upload_to=category_icon_upload_path,
+        null=True,
+        blank=True,
+    )
 
     def save(self, *args, **kwargs):
         if self.id:
             existing = get_object_or_404(Category, id=self.id)
             if existing.icon != self.icon:
-                existing.icon.delete(save=False) # save=False could prevent us from saving the model at this point
-            super(Category, self).save(*args, **kwargs)
-    
+                existing.icon.delete(save=False)
+        self.name = self.name.lower()
+        super(Category, self).save(*args, **kwargs)
+
     @receiver(models.signals.pre_delete, sender="server.Category")
-    # When we delete the category, we need to delete the corresponding icon file
     def category_delete_files(sender, instance, **kwargs):
         for field in instance._meta.fields:
             if field.name == "icon":
                 file = getattr(instance, field.name)
                 if file:
                     file.delete(save=False)
-
 
     def __str__(self):
         return self.name
@@ -47,7 +50,7 @@ class Server(models.Model):
 
     # Build a relationship to the User table
     # If the owner were deleted from the system, then the server will also be deleted
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="server_owner")
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="server_owner")
 
     # One server is connected to one category (one to one)
     # One category could be connected to many servers (one to many)
@@ -102,7 +105,5 @@ class Channel(models.Model):
                 if file:
                     file.delete(save=False)
 
-
-
     def __str__(self):
-        return self.name
+        return f'{self.name}-{self.id}'
