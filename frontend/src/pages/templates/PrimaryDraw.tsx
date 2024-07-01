@@ -40,7 +40,7 @@ const PrimaryDraw = () => {
         // If open is false, 
         // the styles returned by closedMixin(theme) are applied to the drawer and its paper element (& .MuiDrawer-paper).
         ...(!open && {
-            ...openedMixin(),
+            ...closedMixin(),
             "& .MuiDrawer-paper": closedMixin(),
         }),
     }))
