@@ -26,14 +26,19 @@ const PrimaryDraw = () => {
         width: theme.primaryDraw.closed,
     })
 
+
     const Drawer = styled(MuiDrawer, {})(({ theme, open }) => ({
         width: theme.primaryDraw.width,
         whiteSpace: "nowrap",
         boxSizing: "border-box",
+        // If open is true, 
+        // the styles returned by openedMixin(theme) are applied to the drawer and its paper element (& .MuiDrawer-paper).
         ...(open && {
             ...openedMixin(),
             "& .MuiDrawer-paper": openedMixin(),
         }),
+        // If open is false, 
+        // the styles returned by closedMixin(theme) are applied to the drawer and its paper element (& .MuiDrawer-paper).
         ...(!open && {
             ...openedMixin(),
             "& .MuiDrawer-paper": closedMixin(),
