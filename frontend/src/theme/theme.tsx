@@ -5,12 +5,20 @@ declare module "@mui/material/styles" {
         primaryAppBar: {
             height: number;
         };
+        primaryDraw: {
+            width: number;
+            closed: number;
+        };
     }
     // Make us utilize the height property
     // The question mark indicates the primaryAppBar is optional
     interface ThemeOptions {
-        primaryAppBar?: {
+        primaryAppBar: {
             height: number;
+        };
+        primaryDraw: {
+            width: number;
+            closed: number;
         };
     }
 }
@@ -22,6 +30,10 @@ export const createMuiTheme = () => {
         },
         primaryAppBar: {
             height: 50,
+        },
+        primaryDraw: {
+            width: 240,
+            closed: 70,
         },
         components: {
             MuiAppBar: {
